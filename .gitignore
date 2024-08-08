@@ -1,0 +1,5 @@
+# Bỏ qua thư mục data
+data/
+
+# Bỏ qua tất cả các file .mp4
+*.mp4
