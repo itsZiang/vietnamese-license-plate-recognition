@@ -16,10 +16,4 @@ REGIONS = {
         "light": [504, 45, 549, 168], # x1y1x2y2
         "stop_line": np.array([[777, 984], [768, 996], [2213, 996], [2205, 984]])
     },
-    # "road2": {
-    #     "vertices": np.array([[543, 334], [5, 524], [677, 524], [967, 334]], np.int32),
-    #     "direction": "n2s", # north to south
-    #     "light": None, # x1y1x2y2
-    #     "stop_line": np.array([[777, 984], [768, 996], [2213, 996], [2205, 984]])
-    # },
 }

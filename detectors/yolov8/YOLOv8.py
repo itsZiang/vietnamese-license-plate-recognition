@@ -1,4 +1,3 @@
-# import time
 import cv2
 import numpy as np
 import onnxruntime as ort
@@ -11,7 +10,6 @@ class YOLOv8:
         self.conf_threshold = conf_thres
         self.iou_threshold = iou_thres
 
-        # Initialize model
         self.initialize_model(path)
 
     def __call__(self, image):
@@ -26,7 +24,6 @@ class YOLOv8:
     def detect_objects(self, image):
         input_tensor = self.prepare_input(image)
 
-        # Perform inference on the image
         outputs = self.inference(input_tensor)
 
         self.boxes, self.scores, self.class_ids = self.process_output(outputs)
@@ -38,10 +35,8 @@ class YOLOv8:
 
         input_img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-        # Resize input image
         input_img = cv2.resize(input_img, (self.input_width, self.input_height))
 
-        # Scale input pixel values to 0 to 1
         input_img = input_img / 255.0
         input_img = input_img.transpose(2, 0, 1)
         input_tensor = input_img[np.newaxis, :, :, :].astype(np.float32)
@@ -50,16 +45,13 @@ class YOLOv8:
 
 
     def inference(self, input_tensor):
-        # start = time.perf_counter()
         outputs = self.session.run(self.output_names, {self.input_names[0]: input_tensor})
 
-        # print(f"Inference time: {(time.perf_counter() - start)*1000:.2f} ms")
         return outputs
 
     def process_output(self, output):
         predictions = np.squeeze(output[0]).T
 
-        # Filter out object confidence scores below threshold
         scores = np.max(predictions[:, 4:], axis=1)
         predictions = predictions[scores > self.conf_threshold, :]
         scores = scores[scores > self.conf_threshold]
@@ -67,32 +59,25 @@ class YOLOv8:
         if len(scores) == 0:
             return [], [], []
 
-        # Get the class with the highest confidence
         class_ids = np.argmax(predictions[:, 4:], axis=1)
 
-        # Get bounding boxes for each object
         boxes = self.extract_boxes(predictions)
 
-        # Apply non-maxima suppression to suppress weak, overlapping bounding boxes
         indices = nms(boxes, scores, self.iou_threshold)
 
         return boxes[indices], scores[indices], class_ids[indices]
 
     def extract_boxes(self, predictions):
-        # Extract boxes from predictions
         boxes = predictions[:, :4]
 
-        # Scale boxes to original image dimensions
         boxes = self.rescale_boxes(boxes)
 
-        # Convert boxes to xyxy format
         boxes = xywh2xyxy(boxes)
 
         return boxes
 
     def rescale_boxes(self, boxes):
 
-        # Rescale boxes to original image dimensions
         input_shape = np.array([self.input_width, self.input_height, self.input_width, self.input_height])
         boxes = np.divide(boxes, input_shape, dtype=np.float32)
         boxes *= np.array([self.img_width, self.img_height, self.img_width, self.img_height])

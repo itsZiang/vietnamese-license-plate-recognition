@@ -13,7 +13,6 @@ class DBPostProcess:
         self.thresh = thresh
         self.min_size = 3
 
-    # Postprocess để lấy ra boxes từ bitmap  
     def boxes_from_bitmap(self, pred, bitmap, shape, unclip_ratio, box_thresh):
         '''
         bitmap: single map with shape (1, H, W),

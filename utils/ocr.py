@@ -1,7 +1,6 @@
 import random
 import string
 import os
-# from PIL import Image
 import cv2
 import numpy as np
 import math
@@ -9,13 +8,11 @@ import time
 import traceback
 import yaml
 from torch import nn
-# from PIL import Image
 
 from paddleocr.ppocr.postprocess import build_post_process
 import paddleocr.tools.infer.utility as utility
 from paddleocr.ppocr.utils.logging import get_logger
 from .utils import MyDict
-# from .utils import delete_file
 
 os.environ["FLAGS_allocator_strategy"] = 'auto_growth'
 
@@ -64,11 +61,9 @@ class TextRecognizer(object):
 
     def __call__(self, img_list):
         img_num = len(img_list)
-        # Calculate the aspect ratio of all text bars
         width_list = []
         for img in img_list:
             width_list.append(img.shape[1] / float(img.shape[0]))
-        # Sorting can speed up the recognition process
         indices = np.argsort(np.array(width_list))
         rec_res = [['', 0.0]] * img_num
         batch_num = self.rec_batch_num
@@ -79,7 +74,6 @@ class TextRecognizer(object):
             norm_img_batch = []
             imgC, imgH, imgW = self.rec_image_shape[:3]
             max_wh_ratio = imgW / imgH
-            # max_wh_ratio = 0
             for ino in range(beg_img_no, end_img_no):
                 h, w = img_list[indices[ino]].shape[0:2]
                 wh_ratio = w * 1.0 / h
@@ -163,23 +157,3 @@ class DummyOCR(nn.Module):
         return dummy_output
 
 
-# class EasyOCR(nn.Module):
-#     """
-#     OCR Module using EasyOCR library (https://github.com/JaidedAI/EasyOCR)
-#     """
-#
-#     def __init__(self):
-#         super().__init__()
-#         self.reader = easyocr.Reader(["vi"])
-#
-#     def forward(self, image):
-#         """
-#         Overwrite the forward method of nn.Module
-#         """
-#         cv2.imwrite("temp.jpg", image)
-#         result = self.reader.readtext("temp.jpg")
-#         delete_file("temp.jpg")
-#         if len(result) > 0:
-#             return result[0][1]
-#         else:
-#             return ''

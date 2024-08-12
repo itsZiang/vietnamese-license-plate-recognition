@@ -24,7 +24,6 @@ class BaseJsonLogger(object):
     """
 
     def dic(self):
-        # returns dicts of objects
         out = {}
         for k, v in self.__dict__.items():
             if hasattr(v, 'dic'):
@@ -37,7 +36,6 @@ class BaseJsonLogger(object):
 
     @staticmethod
     def list(values):
-        # applies the dic method on items in the list
         return [v.dic() if hasattr(v, 'dic') else v for v in values]
 
 
@@ -83,7 +81,6 @@ class Bbox(BaseJsonLogger):
         self.height = height
 
     def add_label(self, category, confidence):
-        # adds category and confidence only if top_k is not exceeded.
         self.labels.append(Label(category, confidence))
 
     def labels_full(self, value):

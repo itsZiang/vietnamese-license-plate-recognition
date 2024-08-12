@@ -6,7 +6,6 @@ import shutil
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
-# import torch
 from torch.utils.data import Dataset
 from torchvision import transforms
 
@@ -130,7 +129,6 @@ class PlateYOLO(Dataset):
         print("Converting dataset to {form} format".format(form=data_format))
         check_folder(save_dir)
         if "yolo" in data_format:
-            # Create data folder
             if "v5" in data_format:
                 check_datayaml_yolov5(save_dir)
             else:
@@ -152,10 +150,8 @@ class PlateYOLO(Dataset):
                     target_labels_path = valid_labels_path
                 print("Creating {name} dataset...".format(name=key))
                 for sample in tqdm(self.sets[key]):
-                    # copy image file to destination
                     shutil.copy(sample["image_path"], target_images_path)
 
-                    # Create annotation of yolo bbox
                     image = cv2.imread(sample["image_path"]) # shape: (h, w, 3)
                     im_height = image.shape[0]
                     im_width = image.shape[1]
@@ -163,7 +159,6 @@ class PlateYOLO(Dataset):
                     yolo_box = xywh2yolo(bbox_xywh, im_height, im_width)
                     label = "0 "+''.join(str(element)+' ' for element in yolo_box)
 
-                    # write annotation to file
                     txt_name = os.path.basename(sample["image_path"]).replace(".jpg", ".txt")
                     with open(os.path.join(target_labels_path, txt_name), "w") as text_file:
                         text_file.write(label)
@@ -173,8 +168,6 @@ class PlateYOLO(Dataset):
 
 if __name__ == "__main__":
     plate_dataset = PlateYOLO(root_dir="data/full", limit_size=False)
-    # plate_dataset.save(data_format="yolov5", 
-    #                    save_dir="/home/tungn197-2/code/license_plates/plate_detection/data/plate_yolov5")
     index = random.randint(0, len(plate_dataset) - 1)
     index = 11459
     print(index, plate_dataset[index])

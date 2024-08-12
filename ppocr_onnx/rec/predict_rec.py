@@ -38,7 +38,6 @@ class TextRecognizer:
 
     def __call__(self, img_list):
         img_num = len(img_list)
-        # Sorting can speed up the recognition process
         indices = np.argsort([img.shape[1] / img.shape[0] for img in img_list])
 
         rec_res = [['', 0.0]] * img_num
@@ -52,9 +51,6 @@ class TextRecognizer:
                 for ino in range(beg_img_no, end_img_no)
             ]).copy()
 
-            # if norm_img_batch.shape[3] < 320:
-            #     pad_width = 320 - norm_img_batch.shape[3]
-            #     norm_img_batch = np.pad(norm_img_batch, ((0, 0), (0, 0), (0, 0), (0, pad_width)), mode='constant')
 
             starttime = time.time()
             input_dict = {self.input_tensor.name: norm_img_batch}

@@ -1,4 +1,3 @@
-# import cv2
 import numpy as np
 import scipy
 import lap
@@ -6,7 +5,6 @@ from scipy.spatial.distance import cdist
 
 from cython_bbox import bbox_overlaps as bbox_ious
 from . import kalman_filter
-# import time
 
 def merge_matches(m1, m2, shape):
     o,P,Q = shape
@@ -122,8 +120,6 @@ def embedding_distance(tracks, detections, metric='cosine'):
     if cost_matrix.size == 0:
         return cost_matrix
     det_features = np.asarray([track.curr_feat for track in detections], dtype=np.float)
-    #for i, track in enumerate(tracks):
-        #cost_matrix[i, :] = np.maximum(0.0, cdist(track.smooth_feat.reshape(1,-1), det_features, metric))
     track_features = np.asarray([track.smooth_feat for track in tracks], dtype=np.float)
     cost_matrix = np.maximum(0.0, cdist(track_features, det_features, metric))  # Nomalized features
     return cost_matrix
@@ -165,7 +161,6 @@ def fuse_iou(cost_matrix, tracks, detections):
     fuse_sim = reid_sim * (1 + iou_sim) / 2
     det_scores = np.array([det.score for det in detections])
     det_scores = np.expand_dims(det_scores, axis=0).repeat(cost_matrix.shape[0], axis=0)
-    #fuse_sim = fuse_sim * (1 + det_scores) / 2
     fuse_cost = 1 - fuse_sim
     return fuse_cost
 

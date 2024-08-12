@@ -135,19 +135,15 @@ def draw_box(img, pt1, pt2, color, thickness, r, d):
     """
     x1, y1 = pt1
     x2, y2 = pt2
-    # Top left
     cv2.line(img, (x1 + r, y1), (x1 + r + d, y1), color, thickness)
     cv2.line(img, (x1, y1 + r), (x1, y1 + r + d), color, thickness)
     cv2.ellipse(img, (x1 + r, y1 + r), (r, r), 180, 0, 90, color, thickness)
-    # Top right
     cv2.line(img, (x2 - r, y1), (x2 - r - d, y1), color, thickness)
     cv2.line(img, (x2, y1 + r), (x2, y1 + r + d), color, thickness)
     cv2.ellipse(img, (x2 - r, y1 + r), (r, r), 270, 0, 90, color, thickness)
-    # Bottom left
     cv2.line(img, (x1 + r, y2), (x1 + r + d, y2), color, thickness)
     cv2.line(img, (x1, y2 - r), (x1, y2 - r - d), color, thickness)
     cv2.ellipse(img, (x1 + r, y2 - r), (r, r), 90, 0, 90, color, thickness)
-    # Bottom right
     cv2.line(img, (x2 - r, y2), (x2 - r - d, y2), color, thickness)
     cv2.line(img, (x2, y2 - r), (x2, y2 - r - d), color, thickness)
     cv2.ellipse(img, (x2 - r, y2 - r), (r, r), 0, 0, 90, color, thickness)
@@ -257,41 +253,30 @@ def crop_expanded_plate(plate_xyxy, cropped_vehicle, expand_ratio=0.2):
     Returns:
     numpy.ndarray: The cropped image of the expanded plate.
     """
-    # Original coordinates
     x_min, y_min, x_max, y_max = plate_xyxy
 
-    # Calculate the width and height of the original cropping area
     width = x_max - x_min
     height = y_max - y_min
 
-    # Calculate the expansion amount (10% of the width and height by default)
     expand_x = int(expand_ratio * width)
     expand_y = int(expand_ratio * height)
 
-    # Calculate the new coordinates with expansion
     new_x_min = max(x_min - expand_x, 0)
     new_y_min = max(y_min - expand_y, 0)
     
-    # (height, width, 3) là shape của ảnh
     new_x_max = min(x_max + expand_x, cropped_vehicle.shape[1])
     new_y_max = min(y_max + expand_y, cropped_vehicle.shape[0])
 
-    # Crop the expanded area
     cropped_plate = cropped_vehicle[new_y_min:new_y_max, new_x_min:new_x_max, :]
 
     return cropped_plate
     
 def check_legit_plate(s):
-    # Remove unwanted characters
     s_cleaned = re.sub(r'[.\-\s]', '', s)
 
-    # Regular expressions for different cases
-    # biển quân đội
     pattern1 = r'^[A-Za-z]{2}[0-9]{4}$'  # Matches exactly 2 letters followed by exactly 4 digits
-    # biển khác
     pattern2 = r'[A-Za-z][0-9]{4,}'      # Matches an alphabet character followed by at least 4 digits
 
-    # Check if the cleaned string matches either pattern
     if re.search(pattern1, s_cleaned) or (re.search(pattern2, s_cleaned) and not re.match(r'^[A-Za-z]{2}', s_cleaned)):
         return True
     else:

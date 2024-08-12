@@ -1,10 +1,8 @@
 import numpy as np
 import torch
-# from time import time 
 
 from .deep.feature_extractor import Extractor
 from .sort.nn_matching import NearestNeighborDistanceMetric
-# from .sort.preprocessing import non_max_suppression
 from .sort.detection import Detection
 from .sort.tracker import Tracker
 
@@ -27,7 +25,6 @@ class DeepSort(object):
 
     def update(self, bbox_xywh, confidences, ori_img):
         self.height, self.width = ori_img.shape[:2]
-        # 生成检测
         features = self._get_features(bbox_xywh, ori_img)
         bbox_tlwh = self._xywh_to_tlwh(bbox_xywh)
         detections = [Detection(bbox_tlwh[i], conf, features[i]) for i, conf in enumerate(
@@ -35,17 +32,10 @@ class DeepSort(object):
         if len(bbox_xywh) != len(detections):
             print(len(bbox_xywh), len(detections))
 
-        # # 非极大值抑制
-        # boxes = np.array([d.tlwh for d in detections])
-        # scores = np.array([d.confidence for d in detections])
-        # indices = non_max_suppression(boxes, self.nms_max_overlap, scores)
-        # detections = [detections[i] for i in indices]
 
-        # 更新跟踪器
         self.tracker.predict()
         self.tracker.update(detections)
 
-        # 输出标识
         outputs = []
         for track in self.tracker.tracks:
             if not track.is_confirmed() or track.time_since_update > 1:

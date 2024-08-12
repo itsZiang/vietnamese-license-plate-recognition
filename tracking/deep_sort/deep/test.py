@@ -13,13 +13,11 @@ parser.add_argument("--no-cuda", action="store_true")
 parser.add_argument("--gpu-id", default=0, type=int)
 args = parser.parse_args()
 
-# device
 device = "cuda:{}".format(
     args.gpu_id) if torch.cuda.is_available() and not args.no_cuda else "cpu"
 if torch.cuda.is_available() and not args.no_cuda:
     cudnn.benchmark = True
 
-# data loader
 root = args.data_dir
 query_dir = os.path.join(root, "query")
 gallery_dir = os.path.join(root, "gallery")
@@ -38,7 +36,6 @@ galleryloader = torch.utils.data.DataLoader(
     batch_size=64, shuffle=False
 )
 
-# net definition
 net = Net(reid=True)
 assert os.path.isfile(
     "./checkpoint/ckpt.t7"), "Error: no checkpoint file found!"
@@ -49,7 +46,6 @@ net.load_state_dict(net_dict, strict=False)
 net.eval()
 net.to(device)
 
-# compute features
 query_features = torch.tensor([]).float()
 query_labels = torch.tensor([]).long()
 gallery_features = torch.tensor([]).float()
@@ -70,7 +66,6 @@ with torch.no_grad():
 
 gallery_labels -= 2
 
-# save features
 features = {
     "qf": query_features,
     "ql": query_labels,

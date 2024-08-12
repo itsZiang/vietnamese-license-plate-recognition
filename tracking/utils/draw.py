@@ -1,4 +1,3 @@
-# import numpy as np
 import cv2
 
 palette = (2 ** 11 - 1, 2 ** 15 - 1, 2 ** 20 - 1)
@@ -19,7 +18,6 @@ def draw_boxes(img, bbox, identities=None, offset=(0,0)):
         x2 += offset[0]
         y1 += offset[1]
         y2 += offset[1]
-        # box text and bar
         id = int(identities[i]) if identities is not None else 0    
         color = compute_color_for_labels(id)
         label = '{}{:d}'.format("", id)

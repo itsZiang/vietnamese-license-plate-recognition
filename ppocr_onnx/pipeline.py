@@ -37,24 +37,17 @@ class DetAndRecONNXPipeline:
                  text_rec_onnx_model="",
                  text_rec_dict="ppocr_keys_v1.txt"):
         
-        # input: img, unclip_ratio, box_thresh
-        # output: dt_boxes, elapse
-        # dt_boxes: ndarrray: [[[x1, y1],[x2,y2],[x3,y3],[x4,y4]],[[][]],...] theo chiều kim đồng hồ
         self.text_detector = TextDetector(
             text_det_onnx_model,
             box_thresh=box_thresh,
             unclip_ratio=unclip_ratio,
         )
         
-        # input: img list
-        # output: rec_res, elapse
-        # rec_res: list of tuple [('text', ocr confidence), ('text', ocr conf),...]
         self.text_recognizer = TextRecognizer(text_rec_onnx_model, text_rec_dict)
 
     def detect_and_ocr(self, img, drop_score=0.5, unclip_ratio=None, box_thresh=None):
         ori_im = img.copy()
         dt_boxes, _ = self.text_detector(img, unclip_ratio, box_thresh) # dt_boxes, elapse
-        # print(dt_boxes)
         if dt_boxes is None:
             return []
         img_crop_list = []
@@ -75,7 +68,6 @@ class DetAndRecONNXPipeline:
             img_crop_list.append(img_crop)
 
         rec_res, _ = self.text_recognizer(img_crop_list) # rec_res, elapse
-        # print(rec_res)
         res = []
         for box, rec_reuslt, img_crop in zip(dt_boxes, rec_res, img_crop_list):
             text, score = rec_reuslt

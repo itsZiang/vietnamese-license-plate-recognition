@@ -19,7 +19,6 @@ class Extractor(object):
             self.input_name = self.sess.get_inputs()[0].name
             self.label_name = self.sess.get_outputs()[0].name
         else:
-            # print("DeepSORT is running without ONNX runtime")
             self.net = Net(reid=True)
             state_dict = torch.load(model_path, map_location=lambda storage, loc: storage)[
                 'net_dict']
@@ -55,16 +54,9 @@ class Extractor(object):
         with torch.no_grad():
             if self.onnx_inf:
                 im_batch = im_batch.cpu().numpy()
-                # input_name = self.sess.get_inputs()[0].name
-                # label_name = self.sess.get_outputs()[0].name
                 features = self.sess.run([self.label_name], {self.input_name: im_batch})[0]
             else:
                 im_batch = im_batch.to(self.device)
                 features = self.net(im_batch).cpu().numpy()
         return features
 
-# if __name__ == '__main__':
-#     img = cv2.imread("demo.jpg")[:, :, (2, 1, 0)]
-#     extr = Extractor("checkpoint/mars.t7")
-#     feature = extr(img)
-#     print(feature.shape)
