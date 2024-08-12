@@ -1,0 +1,11 @@
+torch==2.4.0+cu118
+torchaudio==2.4.0+cu118
+torchvision==0.19.0+cu118
+onnx==1.15.0
+onnxruntime==1.15.0
+onnxruntime-gpu==1.10.0
+paddleocr==2.8.1
+paddlepaddle==2.6.1
+paddlepaddle-gpu==2.6.1
+protobuf==3.20.3
+ultralytics==8.1.43
