@@ -92,10 +92,10 @@ class DeepSort(object):
         x1, y1, x2, y2 = bbox_xyxy
 
         t = x1
-        l = y1
+        L = y1
         w = int(x2 - x1)
         h = int(y2 - y1)
-        return t, l, w, h
+        return t, L, w, h
 
     def _get_features(self, bbox_xywh, ori_img):
         im_crops = []

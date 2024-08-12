@@ -9,17 +9,17 @@ from . import kalman_filter
 import time
 
 def merge_matches(m1, m2, shape):
-    O,P,Q = shape
+    o,P,Q = shape
     m1 = np.asarray(m1)
     m2 = np.asarray(m2)
 
-    M1 = scipy.sparse.coo_matrix((np.ones(len(m1)), (m1[:, 0], m1[:, 1])), shape=(O, P))
+    M1 = scipy.sparse.coo_matrix((np.ones(len(m1)), (m1[:, 0], m1[:, 1])), shape=(o, P))
     M2 = scipy.sparse.coo_matrix((np.ones(len(m2)), (m2[:, 0], m2[:, 1])), shape=(P, Q))
 
     mask = M1*M2
     match = mask.nonzero()
     match = list(zip(match[0], match[1]))
-    unmatched_O = tuple(set(range(O)) - set([i for i, j in match]))
+    unmatched_O = tuple(set(range(o)) - set([i for i, j in match]))
     unmatched_Q = tuple(set(range(Q)) - set([j for i, j in match]))
 
     return match, unmatched_O, unmatched_Q
