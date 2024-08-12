@@ -14,6 +14,9 @@ jobs:
         with:
           fix_args: --fix .
           config: .ruff.toml
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - name: Commit fixes
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "Auto fix by ruff"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
