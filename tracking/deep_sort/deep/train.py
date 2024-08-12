@@ -2,7 +2,7 @@ import argparse
 import os
 import time
 
-import numpy as np
+# import numpy as np
 import matplotlib.pyplot as plt
 import torch
 import torch.backends.cudnn as cudnn

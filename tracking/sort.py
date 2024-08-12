@@ -21,8 +21,8 @@ import os
 import numpy as np
 # import matplotlib
 # matplotlib.use('TkAgg')
-# import matplotlib.pyplot as plt
-# import matplotlib.patches as patches
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 from skimage import io
 
 import glob
@@ -85,7 +85,7 @@ def convert_x_to_bbox(x,score=None):
   """
   w = np.sqrt(x[2] * x[3])
   h = x[2] / w
-  if(score==None):
+  if(score is None):
     return np.array([x[0]-w/2.,x[1]-h/2.,x[0]+w/2.,x[1]+h/2.]).reshape((1,4))
   else:
     return np.array([x[0]-w/2.,x[1]-h/2.,x[0]+w/2.,x[1]+h/2.,score]).reshape((1,5))

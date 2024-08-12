@@ -6,7 +6,7 @@ import shutil
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
-import torch
+# import torch
 from torch.utils.data import Dataset
 from torchvision import transforms
 

@@ -3,3 +3,5 @@ data/
 
 # Bỏ qua tất cả các file .mp4
 *.mp4
+
+utils/brand_classifier.py

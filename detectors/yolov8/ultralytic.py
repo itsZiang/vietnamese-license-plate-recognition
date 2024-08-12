@@ -2,9 +2,9 @@
 Ultralytics YOLOv8 model for object detection
 """
 import torch
-import numpy as np
-import onnx
-import onnxruntime as ort
+# import numpy as np
+# import onnx
+# import onnxruntime as ort
 from ultralytics import YOLO
 
 class YOLOv8():
@@ -19,7 +19,7 @@ class YOLOv8():
                          device=device)
 
     def predict(self, image_path):
-        metrics = self.model.val()
+        # metrics = self.model.val()
         return self.model(image_path)
     
     def export(self):
@@ -28,7 +28,7 @@ class YOLOv8():
         
 
 if __name__ == "__main__":
-    yolov8 = YOLOv8("/home/tungn197/code/license-plate-recognition/vehicle_yolov8s_640.pt")
+    yolov8 = YOLOv8("./weights/vehicle_yolov8s_640.pt")
     yolov8.export()
 
     # image = np.random.rand(1, 3, 640, 640).astype(np.float32)

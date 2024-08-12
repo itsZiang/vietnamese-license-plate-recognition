@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from PIL import Image
+# from PIL import Image
 import open_clip
 
 # Load model and tokenizer

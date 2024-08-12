@@ -1,7 +1,7 @@
 import random
 import string
 import os
-from PIL import Image
+# from PIL import Image
 import cv2
 import numpy as np
 import math
@@ -9,13 +9,13 @@ import time
 import traceback
 import yaml
 from torch import nn
-from PIL import Image
+# from PIL import Image
 
 from paddleocr.ppocr.postprocess import build_post_process
 import paddleocr.tools.infer.utility as utility
 from paddleocr.ppocr.utils.logging import get_logger
 from .utils import MyDict
-from .utils import delete_file
+# from .utils import delete_file
 
 os.environ["FLAGS_allocator_strategy"] = 'auto_growth'
 

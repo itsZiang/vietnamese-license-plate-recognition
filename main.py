@@ -13,7 +13,7 @@ from ultralytics import YOLO
 from tracking.deep_sort import DeepSort
 from tracking.sort import Sort
 from utils.utils import map_label, check_image_size, draw_text, check_legit_plate, \
-    gettime, compute_color, argmax, BGR_COLORS, VEHICLES, crop_expanded_plate
+    gettime, compute_color, BGR_COLORS, VEHICLES, crop_expanded_plate
 from ppocr_onnx import DetAndRecONNXPipeline
 
 
@@ -49,7 +49,7 @@ def get_args():
     parser.add_argument(
         "--pconf",
         type=float,
-        default=0.25,
+        default=0.5,
         help="confidence for plate detection")
     parser.add_argument(
         "--ocr_thres",
@@ -211,7 +211,7 @@ class TrafficCam():
                     - Detection: Ultralytics YOLOv8
                     - Tracking: DeepSORT
                 """
-                t1 = time()
+                # t1 = time()
                 vehicle_detection = self.vehicle_detector(
                     frame,
                     verbose=False,
@@ -327,7 +327,7 @@ class TrafficCam():
                         # 3. điều kiện bổ sung: chuỗi k bắt đầu bằng 2 chữ cái, tức là chuỗi bắt đầu bằng số
                         success = (vehicle["ocr_conf"] > self.ocr_thres) \
                                   and len(plate_number) > 5 \
-                                #   and check_legit_plate(plate_number) 
+                                  and check_legit_plate(plate_number) 
                         # Nếu thành công
                         if success:
                             # hiển thị thông tin biển số xe
