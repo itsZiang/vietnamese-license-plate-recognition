@@ -41,6 +41,7 @@ COLOR_HSV = {
         'yellow': [(20, 100, 100), (30, 255, 255)] # Yellow color range
     }
 
+
 class MyDict(dict):
     def __getattribute__(self, item):
         return self[item]
@@ -273,12 +274,67 @@ def crop_expanded_plate(plate_xyxy, cropped_vehicle, expand_ratio=0.2):
     
 def check_legit_plate(s):
     s_cleaned = re.sub(r'[.\-\s]', '', s)
-
-    pattern1 = r'^[A-Za-z]{2}[0-9]{4}$'  # Matches exactly 2 letters followed by exactly 4 digits
-    pattern2 = r'[A-Za-z][0-9]{4,}'      # Matches an alphabet character followed by at least 4 digits
-
-    if re.search(pattern1, s_cleaned) or (re.search(pattern2, s_cleaned) and not re.match(r'^[A-Za-z]{2}', s_cleaned)):
-        return True
-    else:
+    
+    if len(s_cleaned) > 9 or len(s_cleaned) < 8:
         return False
+    return True
+    
+    
+
+    
+
+
+
+def correct_plate(s):
+
+    dict_char_to_int = {
+                        'A': '4', 
+                        'B': '8',
+                        'C': '0', # 61-B19997C
+                        'D': '0', # nếu sau chữ cái cuối cùng có 5 
+                        'G': '6', # G1Z1112 (s)
+                        'U': '0', # 6UC54536 (ds n)
+                        'I': '1', # SIF69116
+                        'T': '1', # 59-YT14999 (ds n)
+                        'L': '4', # 63BL25751, 6L.3Z41204, 85-R3L336, L8-E11362, 5L-X85917
+                        'S': '5', #51-SS4867 (ds n), 89-HS3589 (ds n), SIF69116 (ds n) 
+                        'Z': '2', # 61-SZ2916 (ds n), 6L.3Z41204 (ds n), 67LZ12199 (ds n)
+                        }
+    dict_int_to_char = {
+                        '0': 'D', # 61-01663.65, 61LD036.81(TH đúng), 77-01147.31
+                        '2': 'Z',
+                        '1': 'L', # 37-1217020, 78-119281, 371217020
+                        '6': 'G', # 516153602
+                        '8': 'B', # 48-81583.65, 72803844 (rất nhiều)
+                        } 
+    dict_int_to_int = {'0': '8', # 09-H53589, 06-B10686            
+                        }
+    
+    s = re.sub(r'[.\-\s]', '', s)
+    if s[0] == '0':
+        s = '8' + s[1:]
+        
+    if s[0].isupper() or s[1].isupper():
+        s = ''.join(dict_char_to_int.get(c, c) for c in s[:2]) + s[2:]
+        
+    s_2_4 = s[2:4]
+    if s_2_4[0].isupper() and s_2_4[1].isupper():  # Nếu cả hai ký tự đều là chữ viết hoa
+        if len(s) == 8:  # Trường hợp 1: len(s) == 8
+            s = s[:3] + dict_char_to_int.get(s[3], s[3]) + s[4:]
+    elif s_2_4.isdigit():
+        s = s[:2] + dict_int_to_char.get(s[2], s[2]) + s[3:]
+    elif s_2_4.isupper():  # Trường hợp 1: số trước chữ
+        s = s[:2] + dict_int_to_char.get(s[2], s[2]) + dict_char_to_int.get(s[3], s[3]) + s[4:]
+    else: s = s
+    
+    s_4 = s[4:]
+    def replace(match):
+        char = match.group(0)
+        return dict_char_to_int.get(char, char)
+    result = re.sub(r'[A-Z]', replace, s_4)
+    s = s[:4] + result 
+    
+    return s
+
+    
     

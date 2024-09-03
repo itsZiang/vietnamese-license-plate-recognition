@@ -7,12 +7,13 @@ import cv2
 import numpy as np
 import torch
 import re
+from time import time
 
 from ultralytics import YOLO
 from tracking.deep_sort import DeepSort
 from tracking.sort import Sort
 from utils.utils import map_label, check_image_size, draw_text, check_legit_plate, \
-    gettime, compute_color, BGR_COLORS, VEHICLES, crop_expanded_plate
+    gettime, compute_color, argmax, BGR_COLORS, VEHICLES, crop_expanded_plate, correct_plate
 from ppocr_onnx import DetAndRecONNXPipeline
 
 
@@ -47,7 +48,7 @@ def get_args():
     parser.add_argument(
         "--pconf",
         type=float,
-        default=0.5,
+        default=0.25,
         help="confidence for plate detection")
     parser.add_argument(
         "--ocr_thres",
@@ -77,7 +78,7 @@ def get_args():
     parser.add_argument(
         "--save_dir",
         type=str,
-        default="data/logs",
+        default="data/logs_2",
         help="saved path")
     parser.add_argument(
         "--lang",
@@ -200,6 +201,7 @@ class TrafficCam():
                     - Detection: Ultralytics YOLOv8
                     - Tracking: DeepSORT
                 """
+                t1 = time()
                 vehicle_detection = self.vehicle_detector(
                     frame,
                     verbose=False,
@@ -215,6 +217,7 @@ class TrafficCam():
                         outputs = self.tracker.update(vehicle_boxes.cpu().xywh,
                                                       vehicle_boxes.cpu().conf,
                                                       frame)
+                        
                     else:
                         outputs = self.tracker.update(
                             vehicle_boxes.cpu().xyxy).astype(int)
@@ -272,9 +275,10 @@ class TrafficCam():
                         box = vehicle["bbox_xyxy"].astype(int)
                         plate_number = self.vehicles_dict[str(identity)]["plate_number"]
                         success = (vehicle["ocr_conf"] > self.ocr_thres) \
-                                  and len(plate_number) > 5 \
                                   and check_legit_plate(plate_number) 
                         if success:
+                            plate_number = correct_plate(plate_number)
+                            
                             pos = (box[0], box[1] + 26)
                             draw_text(
                                 img=displayed_frame,
@@ -303,9 +307,6 @@ class TrafficCam():
                             continue
 
                         else:
-                            if box[1] < thresh_h or box[3] > h - thresh_h:  # Ignore vehicle out of recognition zone
-                                in_frame_indentities.remove(identity)
-                                continue
 
                             cropped_vehicle = frame[box[1]:box[3], box[0]:box[2], :]
                             vehicle["vehicle_image"] = cropped_vehicle
