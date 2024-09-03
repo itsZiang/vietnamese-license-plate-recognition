@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 import torch
 import re
-from time import time
+# from time import time
 
 from ultralytics import YOLO
 from tracking.deep_sort import DeepSort
