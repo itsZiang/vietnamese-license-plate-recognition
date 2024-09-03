@@ -13,7 +13,7 @@ from ultralytics import YOLO
 from tracking.deep_sort import DeepSort
 from tracking.sort import Sort
 from utils.utils import map_label, check_image_size, draw_text, check_legit_plate, \
-    gettime, compute_color, argmax, BGR_COLORS, VEHICLES, crop_expanded_plate, correct_plate
+    gettime, compute_color, BGR_COLORS, VEHICLES, crop_expanded_plate, correct_plate
 from ppocr_onnx import DetAndRecONNXPipeline
 
 
@@ -190,7 +190,7 @@ class TrafficCam():
                 f"{log_path}/infered_{vid_name}", fourcc, fps, (w, h))
         num_frame = 0
         captured = 0
-        thresh_h = int(h / 8)  # Limit detection zone
+        # thresh_h = int(h / 8)  # Limit detection zone
         print("Traffic Cam is ready!")
         while cap.isOpened():
             t0_fps = gettime()
@@ -211,7 +211,7 @@ class TrafficCam():
                     - Detection: Ultralytics YOLOv8
                     - Tracking: DeepSORT
                 """
-                t1 = time()
+                # t1 = time()
                 vehicle_detection = self.vehicle_detector(
                     frame,
                     verbose=False,

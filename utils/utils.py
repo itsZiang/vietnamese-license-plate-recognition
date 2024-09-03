@@ -323,7 +323,7 @@ def correct_plate(s):
         s = s[:2] + dict_int_to_char.get(s[2], s[2]) + s[3:]
     elif s_2_4.isupper():  # Trường hợp 1: số trước chữ
         s = s[:2] + dict_int_to_char.get(s[2], s[2]) + dict_char_to_int.get(s[3], s[3]) + s[4:]
-    else: s = s
+    # else: s = s
     
     s_4 = s[4:]
     def replace(match):
